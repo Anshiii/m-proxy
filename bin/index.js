@@ -1,9 +1,8 @@
-import MProxy from '../src/index'
 
-
+const MProxy = require('../src/index')
 /* use mProxy */
 const options = {
-
+    port:6080
 }
 
 /* TODO options 应该使用 json 文件传入 */
