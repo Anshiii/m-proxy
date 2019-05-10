@@ -16,17 +16,30 @@ module.exports = class MProxy {
 
       socket.on("data", buff => {
         /* data 是用户的真实请求数据 */
-        console.log("这是我收到的data", buff.toString());
+        console.log("这是P-CLIENT收到的data", buff.toString());
+
+        /* 从这里拿到数据，向p-server发起请求 */
+        const client = net.createConnection(
+          {
+            host: "localhost",
+            port: 6090
+          },
+          () => {
+            /* 建立和服务的连接 */
+            console.log("已经和 p-server 建立了链接");
+            client.write(buff.toString(), () => {
+              console.log("客户端已发送");
+            });
+          }
+        );
+        client.on("data", buff => {
+          /* 来自 p-server 的响应,返回给 t-client */
+          socket.write(buff.toString());
+        });
       });
 
-      /* 监听到 user 发送了 socket
-      转发给 客户端  */
-      /*  net.createConnection(7777, "localhost", socket => {
-        console.log("和本机的 7777 进行链接？", socket);
-      }); */
-
       socket.on("end", () => {
-        console.log("客户端已断开连接");
+        console.log("p-client 被断开连接");
       });
     });
 
