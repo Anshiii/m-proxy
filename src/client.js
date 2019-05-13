@@ -1,4 +1,18 @@
 const net = require("net");
+// const { HTTPParser } = internalBingding("http_parser_llhttp");
+
+function getMethodAndHost(buff) {
+  let LF = 0x0a,
+    CR = 0x0d;
+  let method, host; // host 包括 port
+  let methodIdx = buff.indexOf(LF);
+  method = buff.slice(0, methodIdx);
+  let tem = buff.slice(methodIdx);
+  let hostIdx = tem.indexOf(LF);
+  host = tem.slice(0, hostIdx);
+
+  console.log(`method:${method.toString()}, host:${host.toString()}`);
+}
 module.exports = class MProxy {
   constructor(options) {
     this.port = options.port;
@@ -15,8 +29,10 @@ module.exports = class MProxy {
       );
 
       socket.on("data", buff => {
-        /* data 是用户的真实请求数据 */
+        /* data 是用户的真实请求数据 @Q 为什么这里输出刚好是一个 http 请求
+        // 把 字符串变成数据 */
         console.log("这是P-CLIENT收到的data", buff.toString());
+        getMethodAndHost(buff);
 
         /* 从这里拿到数据，向p-server发起请求 */
         const client = net.createConnection(
