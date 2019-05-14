@@ -73,10 +73,12 @@ module.exports = class MProxy {
 
         client.on("data", buff => {
           /* 来自 p-server 的响应,返回给 t-client */
-          console.log(`
-              来自p-server的响应: ${buff.toString()}`);
+
           socket.write(buff, () => {
-            console.log("成功写完");
+            console.log(
+              "来自p-server的响应原封不动返回给t-client:",
+              buff.slice(0,100).toString()
+            );
           });
         });
         client.on("error", err => {
@@ -85,7 +87,7 @@ module.exports = class MProxy {
       });
 
       socket.on("end", () => {
-        console.log("p-client 被断开连接");
+        console.log("user 断开了与 p-client 的连接");
       });
     });
 

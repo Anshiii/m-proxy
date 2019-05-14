@@ -60,7 +60,7 @@ module.exports = class MProxy {
             client.on("data", res => {
               /* 来自 t-server 的响应,返回给 p-client */
               console.log(`
-              来自t-server的响应: ${res.toString()}`);
+              来自t-server的响应: ${res.slice(0,100).toString()}`);
               socket.write(res);
             });
 
